@@ -1,0 +1,26 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/FSO-React/part8#readme",
+  "bugs": {
+    "url": "https://github.com/FSO-React/part8/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FSO-React/part8.git"
+  },
+  "license": "ISC",
+  "author": "Alejandro Diaz Crivelli",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.12.0",
+    "apollo-server": "^3.13.0",
+    "graphql": "^16.10.0",
+    "graphql-tag": "^2.12.6"
+  }
+}
