@@ -4,6 +4,7 @@ import { ALL_AUTHORS } from '../queries/authors'
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
   
+  // eslint-disable-next-line react/prop-types
   if (!props.show) {
     return null
   }
