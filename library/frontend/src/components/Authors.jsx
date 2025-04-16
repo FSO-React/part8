@@ -1,3 +1,4 @@
+import AuthorEdition from './AuthorEdition'
 import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS } from '../queries/authors'
 
@@ -34,6 +35,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <AuthorEdition />
     </div>
   )
 }
