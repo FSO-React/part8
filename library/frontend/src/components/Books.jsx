@@ -22,10 +22,6 @@ const Books = ({ show }) => {
     .filter((a, i, arr) => arr.indexOf(a) === i)
     .concat('all genres')
 
-  const filteredBooks = selectedGenre === 'all genres'
-    ? books
-    : books.filter(b => b.genres.includes(selectedGenre))
-
   return (
     <div>
       <h2>books</h2>
@@ -41,13 +37,27 @@ const Books = ({ show }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
+          {
+            selectedGenre === 'all genres' &&
+            books.map(book => (
+              <tr key={book.title}>
+                <td>{book.title}</td>
+                <td>{book.author.name}</td>
+                <td>{book.published}</td>
+              </tr>
+            ))
+          }
+          {
+            selectedGenre !== 'all genres' &&
+            books.map(book => (
+              book.genres.includes(selectedGenre) &&
+              <tr key={book.title}>
+                <td>{book.title}</td>
+                <td>{book.author.name}</td>
+                <td>{book.published}</td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
 
