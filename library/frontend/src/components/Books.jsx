@@ -1,11 +1,11 @@
+/* eslint-disable react/prop-types */
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries/books'
 
-const Books = (props) => {
+const Books = ({ show }) => {
   const result = useQuery(ALL_BOOKS)
 
-  // eslint-disable-next-line react/prop-types
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
@@ -29,7 +29,7 @@ const Books = (props) => {
           {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
-              <td>{a.author}</td>
+              <td>{a.author.name}</td>
               <td>{a.published}</td>
             </tr>
           ))}

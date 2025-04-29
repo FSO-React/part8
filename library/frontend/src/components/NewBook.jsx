@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { ALL_BOOKS, CREATE_BOOK } from '../queries/books'
 import { ALL_AUTHORS } from '../queries/authors'
 
-const NewBook = (props) => {
+const NewBook = ({ show, setError }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
@@ -12,10 +13,14 @@ const NewBook = (props) => {
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: (error) => {
+      const errors = error.graphQLErrors[0].extensions.exception.errors
+      const messages = Object.values(errors).map(e => e.message).join('\n')
+      setError(messages)
+    }
   })
 
-  // eslint-disable-next-line react/prop-types
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
@@ -23,8 +28,7 @@ const NewBook = (props) => {
     event.preventDefault()
     
     if (!title || !author || !published || genres.length === 0) {
-      console.error('title, author, published and genres are required')
-      console.log(title, author, published, genres)
+      setError('title, author, published and genres are required')
       return
     }
 
