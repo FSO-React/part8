@@ -17,7 +17,7 @@ const NewBook = ({ show, setError }) => {
       const errors = error.graphQLErrors[0].extensions.exception.errors
       const messages = Object.values(errors).map(e => e.message).join('\n')
       setError(messages)
-    }
+    },
   })
 
   if (!show) {

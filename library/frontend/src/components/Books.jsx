@@ -1,26 +1,27 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries/books'
+import { ALL_BOOKS, ALL_GENRES } from '../queries/books'
 
 const Books = ({ show }) => {
-  const [selectedGenre, setSelectedGenre] = useState("all genres")
-  const result = useQuery(ALL_BOOKS)
+  const [selectedGenre, setSelectedGenre] = useState('all genres')
+  
+  const resultBooks = useQuery(ALL_BOOKS, {
+    variables: { genre: selectedGenre === 'all genres' ? null : selectedGenre },
+    fetchPolicy: 'network-only'
+  })
+  const resultGenres = useQuery(ALL_GENRES)
 
   if (!show) {
     return null
   }
 
-  if (result.loading) {
+  if (resultBooks.loading || resultGenres.loading) {
     return <div>loading...</div>
   }
 
-  const books = result.data.allBooks
-  const genres = books
-    .map((a) => a.genres)
-    .reduce((a, b) => a.concat(b), [])
-    .filter((a, i, arr) => arr.indexOf(a) === i)
-    .concat('all genres')
+  const books = resultBooks.data.allBooks
+  const genres = [ ...resultGenres.data.allGenres, 'all genres' ]
 
   return (
     <div>
@@ -37,27 +38,13 @@ const Books = ({ show }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {
-            selectedGenre === 'all genres' &&
-            books.map(book => (
-              <tr key={book.title}>
-                <td>{book.title}</td>
-                <td>{book.author.name}</td>
-                <td>{book.published}</td>
-              </tr>
-            ))
-          }
-          {
-            selectedGenre !== 'all genres' &&
-            books.map(book => (
-              book.genres.includes(selectedGenre) &&
-              <tr key={book.title}>
-                <td>{book.title}</td>
-                <td>{book.author.name}</td>
-                <td>{book.published}</td>
-              </tr>
-            ))
-          }
+          {books.map(book => (
+            <tr key={book.title}>
+              <td>{book.title}</td>
+              <td>{book.author.name}</td>
+              <td>{book.published}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 

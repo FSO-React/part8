@@ -53,6 +53,7 @@ const typeDefs = `
     bookCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors(name: String): [Author!]!
+    allGenres: [String!]!
     me: User
   }
 
@@ -100,6 +101,12 @@ const resolvers = {
       const nameFilter = args.name ? { name: { $regex: args.name } } : {}
       const authors = await Author.find(nameFilter)
       return authors
+    },
+    allGenres: async (root, args) => {
+      const books = await Book.find()
+      const genres = books.map(book => book.genres).flat()
+      const uniqueGenres = [...new Set(genres)]
+      return uniqueGenres
     },
     me: (root, args, { currentUser }) => {
       return currentUser

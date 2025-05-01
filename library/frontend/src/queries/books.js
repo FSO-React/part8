@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const ALL_BOOKS = gql`
-  query {
-    allBooks {
+  query AllBooks($author: String, $genre: String) {
+    allBooks (author: $author, genre: $genre) {
       title
       author {
         name
@@ -12,6 +12,12 @@ export const ALL_BOOKS = gql`
       published
       genres
     }
+  }
+`
+
+export const ALL_GENRES = gql`
+  query {
+    allGenres
   }
 `
 
