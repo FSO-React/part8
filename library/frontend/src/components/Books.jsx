@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS, ALL_GENRES } from '../queries/books'
+import { ALL_BOOKS, ALL_GENRES, BOOK_ADDED } from '../queries/books'
+import { updateCache } from "../helper";
+import { useSubscription } from '@apollo/client'
 
 const Books = ({ show }) => {
   const [selectedGenre, setSelectedGenre] = useState('all genres')
@@ -11,6 +13,15 @@ const Books = ({ show }) => {
     fetchPolicy: 'network-only'
   })
   const resultGenres = useQuery(ALL_GENRES)
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      console.log('addedBook', addedBook)
+      window.alert(`New book added: ${addedBook.title}`);
+      updateCache(client.cache, { query: ALL_BOOKS, variables: { genre: selectedGenre === 'all genres' ? null : selectedGenre }}, addedBook);
+    }
+  });
 
   if (!show) {
     return null

@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { ALL_BOOKS, CREATE_BOOK } from '../queries/books'
+import { ALL_BOOKS, ALL_GENRES, CREATE_BOOK } from '../queries/books'
 import { ALL_AUTHORS } from '../queries/authors'
+import { updateCache } from '../helper'
 
 const NewBook = ({ show, setError }) => {
   const [title, setTitle] = useState('')
@@ -12,12 +13,17 @@ const NewBook = ({ show, setError }) => {
   const [genres, setGenres] = useState([])
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }, { query: ALL_GENRES }],
     onError: (error) => {
       const errors = error.graphQLErrors[0].extensions.exception.errors
       const messages = Object.values(errors).map(e => e.message).join('\n')
       setError(messages)
     },
+    update: (cache, response) => {
+      console.log(response.data.addBook)
+      const addedBook = response.data.addBook
+      updateCache(cache, { query: ALL_BOOKS }, addedBook);
+    }
   })
 
   if (!show) {
