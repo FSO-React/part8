@@ -1,4 +1,6 @@
 const { GraphQLError } = require('graphql')
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 const jwt = require('jsonwebtoken')
 const Person = require('./models/person')
 const User = require('./models/user')
@@ -52,7 +54,8 @@ const resolvers = {
           }
         })
       }
-  
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
       return person
     },
     editNumber: async (root, args) => {
@@ -122,6 +125,11 @@ const resolvers = {
   
       return currentUser
     },
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED'])
+    }
   }
 }
 

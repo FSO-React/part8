@@ -1,0 +1,5 @@
+APOLLO_KEY=service:graph-phonebook:user:gh.204d3bcb-3c8a-4baa-9edc-8d005b551c23:wQROhWof-QNV0LH7_tfeFA \
+rover subgraph publish graph-phonebook@current \
+--schema ./phonebook-schema.graphql \
+--name Phonebook \
+--routing-url http://products.prod.svc.cluster.local:4001/graphql
