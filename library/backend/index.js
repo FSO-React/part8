@@ -1,15 +1,15 @@
-const { ApolloServer } = require("@apollo/server");
+const { ApolloServer } = require('@apollo/server')
 const { expressMiddleware } = require('@apollo/server/express4')
 const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
-const { WebSocketServer } = require('ws')
-const { useServer } = require('graphql-ws/lib/use/ws')
 const express = require('express')
 const cors = require('cors')
 const http = require('http')
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
+
 const jwt = require('jsonwebtoken')
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
+const mongoose = require('mongoose')
 
 const User = require("./models/user");
 const typeDefs = require("./schema")
@@ -19,14 +19,13 @@ require("dotenv").config();
 
 const MONGODB_URI = process.env.MONGODB_URI
 
-mongoose
-  .connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI)
   .then(() => {
-    console.log("connected to MongoDB");
+    console.log('connected to MongoDB')
   })
   .catch((error) => {
-    console.log("error connection to MongoDB:", error.message);
-  });
+    console.log('error connection to MongoDB:', error.message)
+  })
 
 const start = async () => {
   const app = express()
@@ -48,11 +47,11 @@ const start = async () => {
         async serverWillStart() {
           return {
             async drainServer() {
-              await serverCleanup.dispose();
+              await serverCleanup.dispose()
             },
-          };
-        },
-      },
+          }
+        }
+      }
     ],
   })
 
@@ -65,12 +64,11 @@ const start = async () => {
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null
-        if (auth && auth.startsWith('Bearer ')) {
-          const decodedToken = jwt.verify(
-            auth.substring(7), process.env.JWT_SECRET
+        if (auth && auth.toLowerCase().startsWith('bearer ')) {
+          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+          const currentUser = await User.findById(decodedToken.id).populate(
+            'friends'
           )
-          const currentUser = await User
-            .findById(decodedToken.id)
           return { currentUser }
         }
       },
@@ -80,7 +78,7 @@ const start = async () => {
   const PORT = 4000
 
   httpServer.listen(PORT, () =>
-    console.log(`Server ready at http://localhost:${PORT}`)
+    console.log(`Server is now running on http://localhost:${PORT}`)
   )
 }
 
